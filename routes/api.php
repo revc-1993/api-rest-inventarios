@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Api\V1\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,18 +16,22 @@ use App\Http\Controllers\ProductController;
 |
 */
 
-Route::get('/', function () {
-    return response()->json([
-        "message" => "Welcome to ApiRestInventory"
-    ]);
-});
-
-Route::post('register', [AuthController::class, 'register']);
-Route::post('login', [AuthController::class, 'login']);
-
-
-Route::middleware('auth:sanctum')
-    ->group(function () {
-        Route::post('logout', [AuthController::class, 'logout']);
-        Route::apiResource('products', ProductController::class);
+Route::prefix("v1")->group(function () {
+    // Init
+    Route::get('/', function () {
+        return response()->json([
+            "message" => "Welcome to ApiRestInventory"
+        ]);
     });
+
+    // Auth
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
+
+
+    Route::middleware('auth:sanctum')
+        ->group(function () {
+            Route::post('logout', [AuthController::class, 'logout']);
+            Route::apiResource('products', ProductController::class);
+        });
+});
